@@ -6,6 +6,8 @@
   <title>Jamie Paton</title>
   <meta name="author" content="Jamie Paton">
   
+  <meta name="description" content="You might be suprised to find most of the topics are about programming and writing.">
+  
   
   <meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1">
 
@@ -19,7 +21,7 @@
 <body>
   <header id="header" class="inner"><div class="alignleft">
   <h1><a href="/">Jamie Paton</a></h1>
-  <h2><a href="/">Notations</a></h2>
+  <h2><a href="/">My Notations</a></h2>
 </div>
 <nav id="main-nav" class="alignright">
   <ul>
@@ -42,17 +44,89 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2012-11-05T23:21:42.000Z"><a href="/2012/11/05/hello-world/">Nov 5, 2012</a></time>
+        <time datetime="2012-11-05T23:21:42.000Z"><a href="/2012/11/05/setup-hexo/">Nov 5, 2012</a></time>
       
       
         
-          <h1 class="title"><a href="/2012/11/05/hello-world/">Hello World</a></h1>
+          <h1 class="title"><a href="/2012/11/05/setup-hexo/">Setting up a Github Pages blog with Hexo</a></h1>
         
       
     </header>
     <div class="entry">
       
-        <p>Welcome to <a href="http://zespia.tw/hexo">Hexo</a>! This is your very first post. Check <a href="http://zespia.tw/hexo/docs">documentaion</a> to learn how to use.</p>
+        <h1>Setup</h1>
+<p>You&#39;ll need the following installed before you can pop the champagne:
+
+</p>
+<ol>
+<li><a href="http://nodejs.org">Node.js</a></li>
+<li>Hexo <code>npm install -g hexo</code></li>
+</ol>
+<h1>Setup Hexo</h1>
+<p>Once you&#39;ve got Hexo installed, you can simply run:
+
+</p>
+<pre><code class="lang-bash">    $ hexo init username.github.com
+    $ cd username.github.com</code></pre>
+<p>Next, we need to configure a couple of things so open up the config file:
+
+</p>
+<pre><code class="lang-bash">    $ vim _config.yml</code></pre>
+<p>Some items you&#39;ll want to immediately change are:
+
+</p>
+<ul>
+<li>Title</li>
+<li>Subtitle</li>
+<li>Url</li>
+<li>Author</li>
+</ul>
+<p>To make Github deployments work with <code>hexo deploy</code> you&#39;ll want to make sure
+that the <code># Deployment</code> section looks something like:
+
+</p>
+<pre><code class="lang-yaml"><span class="method">deploy:</span>
+      <span class="method">type:</span> github
+      <span class="method">repository:</span> <span class="method">https:</span>//github.com/username/username.github.com.git
+      <span class="method">branch:</span> master</code></pre>
+<h2>Setup Github</h2>
+<p>Github provides hosting for static websites via <a href="http://pages.github.com">Github Pages</a>.
+As long as you have an index.html in the root of your repo, Github will serve
+up the static files for you.
+
+</p>
+<h2>Create a new repository for your blog</h2>
+<p>You can get this setup by creating the required repository for your new blog, 
+simply create a <a href="https://help.github.com/articles/creating-a-new-repository">new repo</a>
+with the name format as <code>&lt;github username&gt;.github.com</code>, for example: <code>jdpaton.github.com</code>.
+
+</p>
+<p>Once the repo has been created you can setup the deployment process in hexo
+with:
+</p>
+<pre><code class="lang-bash">    $ hexo setup_deploy</code></pre>
+<h2>Generate some content</h2>
+<p>Now that everything is assembled in place, it&#39;s time to flesh out the blog. To 
+generate a new post in Hexo simply issue:
+
+</p>
+<pre><code class="lang-bash">    $ hexo add_post &lt;title&gt;</code></pre>
+<p>That command will create a new post in <code>source/_posts/&lt;title&gt;.md</code>.
+More info about article structure <a href="http://zespia.tw/hexo/docs/writing.html">here</a>
+
+</p>
+<p>Now you can go ahead and add your content, and then when finished, simply run:
+
+</p>
+<pre><code class="lang-bash">    $ hexo generate
+    $ hexo deploy</code></pre>
+<p>And your new blog will be live at <a href="http://username.github.com">http://username.github.com</a> 
+
+</p>
+<p>Hexo: <a href="http://zespia.tw/hexo/docs/">Docs</a>
+
+</p>
+<p>Here&#39;s one I made earlier ;)</p>
 
       
     </div>
@@ -60,7 +134,7 @@
       
         
         <div class="alignright">
-          <a href="http://jdpaton.net/2012/11/05/hello-world/#disqus_thread" class="comment-link">Comments</a>
+          <a href="http://jdpaton.net/2012/11/05/setup-hexo/#disqus_thread" class="comment-link">Comments</a>
         </div>
       
       <div class="clearfix"></div>
@@ -86,6 +160,21 @@
 
 
 
+
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/blog/">blog</a><small>1</small></li>
+  
+    <li><a href="/tags/github/">github</a><small>1</small></li>
+  
+    <li><a href="/tags/hexo/">hexo</a><small>1</small></li>
+  
+    <li><a href="/tags/static/">static</a><small>1</small></li>
+  
+  </ul>
+</div>
 
 
 
