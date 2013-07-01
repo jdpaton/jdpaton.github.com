@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives | Jamie Paton</title>
+  <title>Disabling SSLv2 with Node.js | Jamie Paton</title>
   <meta name="author" content="Jamie Paton">
   
   <meta name="description" content="You might be suprised to find most of the topics are about programming and writing.">
@@ -37,22 +37,17 @@
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
 
-
-<h2 class="archive-title">Archives</h2>
-
-
-  
-    <article class="post">
+<article class="post">
   
   <div class="post-content">
     <header>
       
         <div class="icon"></div>
-        <time datetime="2013-07-01T05:09:33.000Z"><a href="/http://jdpaton.github.io/2013/06/30/disabling-sslv2-with-nodejs/">Jun 30, 2013</a></time>
+        <time datetime="2013-07-01T05:09:33.000Z"><a href="http://jdpaton.github.io/2013/06/30/disabling-sslv2-with-nodejs/">Jun 30, 2013</a></time>
       
       
         
-          <h1 class="title"><a href="/http://jdpaton.github.io/2013/06/30/disabling-sslv2-with-nodejs/">Disabling SSLv2 with Node.js</a></h1>
+          <h1 class="title">Disabling SSLv2 with Node.js</h1>
         
       
     </header>
@@ -141,9 +136,35 @@ minor tweak!</p>
     <footer>
       
         
-        <div class="alignright">
-          <a href="http://jdpaton.github.io/http://jdpaton.github.io/2013/06/30/disabling-sslv2-with-nodejs/#disqus_thread" class="comment-link">Comments</a>
-        </div>
+  
+  <div class="categories">
+    
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="http://jdpaton.github.io/tags/nodejs-SSL-security/">node.js, SSL, security</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js"></script>
+
       
       <div class="clearfix"></div>
     </footer>
@@ -151,123 +172,12 @@ minor tweak!</p>
 </article>
 
 
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2012-11-05T23:21:42.000Z"><a href="/http://jdpaton.github.io/2012/11/05/setup-hexo/">Nov 5, 2012</a></time>
-      
-      
-        
-          <h1 class="title"><a href="/http://jdpaton.github.io/2012/11/05/setup-hexo/">Setting up a Github Pages blog with Hexo</a></h1>
-        
-      
-    </header>
-    <div class="entry">
-      
-        <h1>Setup</h1>
-<p>You&#39;ll need the following installed before you can pop the champagne:</p>
-<ol>
-<li><a href="http://nodejs.org">Node.js</a></li>
-<li>Hexo <code>npm install -g hexo</code></li>
-</ol>
-<h1>Setup Hexo</h1>
-<p>Once you&#39;ve got Hexo installed, you can simply run:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre>    $ hexo init username.github.com
-    $ cd username.github.com
-</pre></td></tr></table></figure>
-
-<p>Next, we need to configure a couple of things so open up the config file:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>    $ vim _config.yml
-</pre></td></tr></table></figure>
-
-<p>Some items you&#39;ll want to immediately change are:</p>
-<ul>
-<li>Title</li>
-<li>Subtitle</li>
-<li>Url</li>
-<li>Author</li>
-</ul>
-<p>To make Github deployments work with <code>hexo deploy</code> you&#39;ll want to make sure
-that the <code># Deployment</code> section looks something like:</p>
-<figure class="highlight lang-yaml"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-</pre></td><td class="code"><pre><span class="method">deploy:</span>
-      <span class="method">type:</span> github
-      <span class="method">repository:</span> <span class="method">https:</span>//github.com/username/username.github.com.git
-      <span class="method">branch:</span> master
-</pre></td></tr></table></figure>
-
-<h2>Setup Github</h2>
-<p>Github provides hosting for static websites via <a href="http://pages.github.com">Github Pages</a>.
-As long as you have an index.html in the root of your repo, Github will serve
-up the static files for you.</p>
-<h2>Create a new repository for your blog</h2>
-<p>You can get this setup by creating the required repository for your new blog, 
-simply create a <a href="https://help.github.com/articles/creating-a-new-repository">new repo</a>
-with the name format as <code>&lt;github username&gt;.github.com</code>, for example: <code>jdpaton.github.com</code>.</p>
-<p>Once the repo has been created you can setup the deployment process in hexo
-with:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>    $ hexo setup_deploy
-</pre></td></tr></table></figure>
-## Generate some content
-
-Now that everything is assembled in place, it&#39;s time to flesh out the blog. To 
-generate a new post in Hexo simply issue:
-
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>    $ hexo add_post &lt;title&gt;
-</pre></td></tr></table></figure>
-
-
-<p>That command will create a new post in <code>source/_posts/&lt;title&gt;.md</code>.
-More info about article structure <a href="http://zespia.tw/hexo/docs/writing.html">here</a></p>
-<p>Now you can go ahead and add your content, and then when finished, simply run:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre>    $ hexo generate
-    $ hexo deploy
-</pre></td></tr></table></figure>
-
-<p>And your new blog will be live at <a href="http://username.github.com">http://username.github.com</a> </p>
-<p>Hexo: <a href="http://zespia.tw/hexo/docs/">Docs</a></p>
-<p>Here&#39;s one I made earlier ;)</p>
-
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/http://jdpaton.github.io/2012/11/05/setup-hexo/#more" class="more-link">Read More</a>
-          </div>
-        
-        <div class="alignright">
-          <a href="http://jdpaton.github.io/http://jdpaton.github.io/2012/11/05/setup-hexo/#disqus_thread" class="comment-link">Comments</a>
-        </div>
-      
-      <div class="clearfix"></div>
-    </footer>
+<section id="comment">
+  <h1 class="title">Comments</h1>
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
   </div>
-</article>
-
-
-  
-
-  <nav id="pagination">
-  
-  
-  <div class="clearfix"></div>
-</nav>
+</section>
 </div></div>
     <aside id="sidebar" class="alignright">
 <div class="search">
@@ -284,15 +194,15 @@ More info about article structure <a href="http://zespia.tw/hexo/docs/writing.ht
   <h3 class="title">Tags</h3>
   <ul class="entry">
   
-    <li><a href="/http://jdpaton.github.io/tags/hexo/">hexo</a><small>1</small></li>
+    <li><a href="http://jdpaton.github.io/tags/hexo/">hexo</a><small>1</small></li>
   
-    <li><a href="/http://jdpaton.github.io/tags/blog/">blog</a><small>1</small></li>
+    <li><a href="http://jdpaton.github.io/tags/blog/">blog</a><small>1</small></li>
   
-    <li><a href="/http://jdpaton.github.io/tags/github/">github</a><small>1</small></li>
+    <li><a href="http://jdpaton.github.io/tags/github/">github</a><small>1</small></li>
   
-    <li><a href="/http://jdpaton.github.io/tags/static/">static</a><small>1</small></li>
+    <li><a href="http://jdpaton.github.io/tags/static/">static</a><small>1</small></li>
   
-    <li><a href="/http://jdpaton.github.io/tags/nodejs-SSL-security/">node.js, SSL, security</a><small>1</small></li>
+    <li><a href="http://jdpaton.github.io/tags/nodejs-SSL-security/">node.js, SSL, security</a><small>1</small></li>
   
   </ul>
 </div>
@@ -319,7 +229,7 @@ var disqus_shortname = 'jdpaton';
   var dsq = document.createElement('script');
   dsq.type = 'text/javascript';
   dsq.async = true;
-  dsq.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+  dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 }());
 </script>

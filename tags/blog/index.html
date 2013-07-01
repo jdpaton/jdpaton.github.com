@@ -48,37 +48,36 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2012-11-05T23:21:42.000Z"><a href="/2012/11/05/setup-hexo/">Nov 5, 2012</a></time>
+        <time datetime="2012-11-05T23:21:42.000Z"><a href="/http://jdpaton.github.io/2012/11/05/setup-hexo/">Nov 5, 2012</a></time>
       
       
         
-          <h1 class="title"><a href="/2012/11/05/setup-hexo/">Setting up a Github Pages blog with Hexo</a></h1>
+          <h1 class="title"><a href="/http://jdpaton.github.io/2012/11/05/setup-hexo/">Setting up a Github Pages blog with Hexo</a></h1>
         
       
     </header>
     <div class="entry">
       
         <h1>Setup</h1>
-<p>You&#39;ll need the following installed before you can pop the champagne:
-
-</p>
+<p>You&#39;ll need the following installed before you can pop the champagne:</p>
 <ol>
 <li><a href="http://nodejs.org">Node.js</a></li>
 <li>Hexo <code>npm install -g hexo</code></li>
 </ol>
 <h1>Setup Hexo</h1>
-<p>Once you&#39;ve got Hexo installed, you can simply run:
+<p>Once you&#39;ve got Hexo installed, you can simply run:</p>
+<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>    $ hexo init username.github.com
+    $ cd username.github.com
+</pre></td></tr></table></figure>
 
-</p>
-<pre><code class="lang-bash">    $ hexo init username.github.com
-    $ cd username.github.com</code></pre>
-<p>Next, we need to configure a couple of things so open up the config file:
+<p>Next, we need to configure a couple of things so open up the config file:</p>
+<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>    $ vim _config.yml
+</pre></td></tr></table></figure>
 
-</p>
-<pre><code class="lang-bash">    $ vim _config.yml</code></pre>
-<p>Some items you&#39;ll want to immediately change are:
-
-</p>
+<p>Some items you&#39;ll want to immediately change are:</p>
 <ul>
 <li>Title</li>
 <li>Subtitle</li>
@@ -86,50 +85,51 @@
 <li>Author</li>
 </ul>
 <p>To make Github deployments work with <code>hexo deploy</code> you&#39;ll want to make sure
-that the <code># Deployment</code> section looks something like:
-
-</p>
-<pre><code class="lang-yaml"><span class="method">deploy:</span>
+that the <code># Deployment</code> section looks something like:</p>
+<figure class="highlight lang-yaml"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="method">deploy:</span>
       <span class="method">type:</span> github
       <span class="method">repository:</span> <span class="method">https:</span>//github.com/username/username.github.com.git
-      <span class="method">branch:</span> master</code></pre>
+      <span class="method">branch:</span> master
+</pre></td></tr></table></figure>
+
 <h2>Setup Github</h2>
 <p>Github provides hosting for static websites via <a href="http://pages.github.com">Github Pages</a>.
 As long as you have an index.html in the root of your repo, Github will serve
-up the static files for you.
-
-</p>
+up the static files for you.</p>
 <h2>Create a new repository for your blog</h2>
 <p>You can get this setup by creating the required repository for your new blog, 
 simply create a <a href="https://help.github.com/articles/creating-a-new-repository">new repo</a>
-with the name format as <code>&lt;github username&gt;.github.com</code>, for example: <code>jdpaton.github.com</code>.
-
-</p>
+with the name format as <code>&lt;github username&gt;.github.com</code>, for example: <code>jdpaton.github.com</code>.</p>
 <p>Once the repo has been created you can setup the deployment process in hexo
-with:
-</p>
-<pre><code class="lang-bash">    $ hexo setup_deploy</code></pre>
-<h2>Generate some content</h2>
-<p>Now that everything is assembled in place, it&#39;s time to flesh out the blog. To 
+with:</p>
+<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>    $ hexo setup_deploy
+</pre></td></tr></table></figure>
+## Generate some content
+
+Now that everything is assembled in place, it&#39;s time to flesh out the blog. To 
 generate a new post in Hexo simply issue:
 
-</p>
-<pre><code class="lang-bash">    $ hexo add_post &lt;title&gt;</code></pre>
+<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>    $ hexo add_post &lt;title&gt;
+</pre></td></tr></table></figure>
+
+
 <p>That command will create a new post in <code>source/_posts/&lt;title&gt;.md</code>.
-More info about article structure <a href="http://zespia.tw/hexo/docs/writing.html">here</a>
+More info about article structure <a href="http://zespia.tw/hexo/docs/writing.html">here</a></p>
+<p>Now you can go ahead and add your content, and then when finished, simply run:</p>
+<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>    $ hexo generate
+    $ hexo deploy
+</pre></td></tr></table></figure>
 
-</p>
-<p>Now you can go ahead and add your content, and then when finished, simply run:
-
-</p>
-<pre><code class="lang-bash">    $ hexo generate
-    $ hexo deploy</code></pre>
-<p>And your new blog will be live at <a href="http://username.github.com">http://username.github.com</a> 
-
-</p>
-<p>Hexo: <a href="http://zespia.tw/hexo/docs/">Docs</a>
-
-</p>
+<p>And your new blog will be live at <a href="http://username.github.com">http://username.github.com</a> </p>
+<p>Hexo: <a href="http://zespia.tw/hexo/docs/">Docs</a></p>
 <p>Here&#39;s one I made earlier ;)</p>
 
       
@@ -137,8 +137,12 @@ More info about article structure <a href="http://zespia.tw/hexo/docs/writing.ht
     <footer>
       
         
+          <div class="alignleft">
+            <a href="/http://jdpaton.github.io/2012/11/05/setup-hexo/#more" class="more-link">Read More</a>
+          </div>
+        
         <div class="alignright">
-          <a href="http://jdpaton.github.com/2012/11/05/setup-hexo/#disqus_thread" class="comment-link">Comments</a>
+          <a href="http://jdpaton.github.io/http://jdpaton.github.io/2012/11/05/setup-hexo/#disqus_thread" class="comment-link">Comments</a>
         </div>
       
       <div class="clearfix"></div>
@@ -159,7 +163,7 @@ More info about article structure <a href="http://zespia.tw/hexo/docs/writing.ht
 <div class="search">
   <form action="http://google.com/search" method="get" accept-charset="utf-8">
     <input type="text" name="q" results="0" placeholder="Search">
-    <input type="hidden" name="q" value="site:jdpaton.github.com">
+    <input type="hidden" name="q" value="site:jdpaton.github.io">
   </form>
 </div>
 
@@ -170,13 +174,15 @@ More info about article structure <a href="http://zespia.tw/hexo/docs/writing.ht
   <h3 class="title">Tags</h3>
   <ul class="entry">
   
-    <li><a href="/tags/blog/">blog</a><small>1</small></li>
+    <li><a href="/http://jdpaton.github.io/tags/hexo/">hexo</a><small>1</small></li>
   
-    <li><a href="/tags/github/">github</a><small>1</small></li>
+    <li><a href="/http://jdpaton.github.io/tags/blog/">blog</a><small>1</small></li>
   
-    <li><a href="/tags/hexo/">hexo</a><small>1</small></li>
+    <li><a href="/http://jdpaton.github.io/tags/github/">github</a><small>1</small></li>
   
-    <li><a href="/tags/static/">static</a><small>1</small></li>
+    <li><a href="/http://jdpaton.github.io/tags/static/">static</a><small>1</small></li>
+  
+    <li><a href="/http://jdpaton.github.io/tags/nodejs-SSL-security/">node.js, SSL, security</a><small>1</small></li>
   
   </ul>
 </div>
@@ -188,7 +194,7 @@ More info about article structure <a href="http://zespia.tw/hexo/docs/writing.ht
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2012 Jamie Paton
+  &copy; 2013 Jamie Paton
   
 </div>
 <div class="clearfix"></div></footer>
