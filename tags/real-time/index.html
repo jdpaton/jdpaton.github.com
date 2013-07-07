@@ -1,0 +1,212 @@
+
+
+
+<h2 class="archive-title tag">real-time</h2>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-07-08T08:41:59.000Z"><a href="/../2013/07/08/server-sent-events-with-aura-and-nodejs/">Jul 8, 2013</a></time>
+      
+      
+        
+          <h1 class="title"><a href="/../2013/07/08/server-sent-events-with-aura-and-nodejs/">Server Sent Events with Aura and Node.js</a></h1>
+        
+      
+    </header>
+    <div class="entry">
+      
+        <blockquote>
+<p>You can view the <a href="http://sse-dash.stacka.to/">demo app</a> or the source on
+<a href="https://github.com/jdpaton/sse-dash">Github</a>.</p>
+</blockquote>
+<p>Recently I uncovered a relatively fresh and unique HTML5 feature; <a href="http://www.w3.org/TR/eventsource/">Server Sent
+Events</a>.</p>
+<p><em>Note</em>: I will digress from the onset that if you are familiar with Websockets,
+then you should understand that they are the superior implementation for
+scalable bidirectional push communication, and not a competiting technology for
+SSE.</p>
+<p>SSE on the other hand can be viewed as more of a &quot;lightweight&quot; alternative,
+for when using websockets is not a viable option, most likely due to server
+limitations.</p>
+<p>To form a base understanding of SSE, here are the main design characteristics:</p>
+<ul>
+<li>Everything happens over the HTTP, no special protocol required</li>
+<li>Keeps open a HTTP/S connection to the server</li>
+<li>Communication is unidirectional (read only by the client)</li>
+<li>Different event sources/channels can be fed down the same connection</li>
+<li>Auto reconnection and event IDs come for free as part of the implementation.i
+The auto-reconnection is ideal for flaky connections, like mobile devices.</li>
+</ul>
+<p>There are some pros and cons of using SSE over websockets. Let&#39;s go over the
+cons first:</p>
+<h4>Cons:</h4>
+<ul>
+<li>The data source is read only. While this lends itself to actually being more
+scalable for RO type applications, for RW type app/pages you&#39;ll have to revert
+to POST&#39;ing or long polling type server writes.</li>
+<li>Depending on the server configuration, the connection may be timed out
+frequently or free&#39;d up for other users accessing the server, but mitigated
+by the auto-reconnection as per the EventSource spec.</li>
+<li>Each SSE source maintains an open connection to the server. This takes away
+server side resources from other users, such as memory, CPU, NOFILE
+and lower <code>max_connections</code> type limits of the HTTP server (as opposed to
+available kernel connections/ports).</li>
+</ul>
+<h4>Pros:</h4>
+<p>With that said SSE <em>does</em> hold advantages over Websockets in some scenarios:</p>
+<ul>
+<li>Doesn&#39;t require any special protocol to be supported in the browser or server</li>
+<li>SSE support can be <a href="https://github.com/Yaffle/EventSource">polyfilled</a>
+(backported) for older browsers that don&#39;t yet implement it.</li>
+<li>Integrated Cross-site/origin request support (via CORS)</li>
+<li>SSE can ingeniously benefit from HTTPS with no extra configuration, unlike
+websockets/WSS, which require certificate setup and implementation on top of
+TLS.</li>
+</ul>
+<h2>Enough, shut up and show me the glory of SSE!</h2>
+<p>OK then, let us wield this technology for the betterment of the internets! If 
+you want to dive straight into the demo app then go here:
+<a href="https://github.com/jdpaton/sse-dash">https://github.com/jdpaton/sse-dash</a></p>
+<p>As prescribed, we&#39;ll look at implementing this in Node.js. Here&#39;s the first
+excerpt you should get familiar with:</p>
+<pre><code><figure class="highlight"><pre>module<span class="preprocessor">.exports</span><span class="preprocessor">.writeSSEHead</span> = function (req, res, cb) {
+    res<span class="preprocessor">.writeHead</span>(<span class="number">200</span>, {
+        <span class="string">"Content-Type"</span>: <span class="string">"text/event-stream"</span>,
+        <span class="string">"Cache-Control"</span>: <span class="string">"no-cache"</span>,
+        <span class="string">"Connection"</span>: <span class="string">"keep-alive"</span>
+    })<span class="comment">;</span>
+    res<span class="preprocessor">.write</span>(<span class="string">"retry: 10000\n"</span>)<span class="comment">;</span>
+    return cb(req, res)<span class="comment">;</span>
+}
+</pre></figure></code></pre>
+<p>Nothing so unusual, but the first part of the SSE spec is here,
+specifically the <code>retry</code> line, telling the client, that in the event a
+disconnect, it should retry after ten seconds. Note the header is
+<code>text/event-stream</code> so the browser knows it&#39;s SSE, we tell the browser not to
+cache any of the responses (you don&#39;t want stale real time data do you? ) and
+we make sure the connections is kept open by the browser/client
+via <code>Connection: keep-alive</code>. Straight forward stuff.</p>
+<p>Next up is writing a custom event with data:</p>
+<pre><code><figure class="highlight"><pre>module<span class="preprocessor">.exports</span><span class="preprocessor">.writeSSEData</span> = function (req, res, event, data, cb) {
+    var id = (new Date())<span class="preprocessor">.toLocaleTimeString</span>()<span class="comment">;</span>
+    res<span class="preprocessor">.write</span>(<span class="string">"id: "</span> + id + <span class="string">'\n'</span>)<span class="comment">;</span>
+    res<span class="preprocessor">.write</span>(<span class="string">"event: "</span> + event + <span class="string">"\n"</span>)<span class="comment">;</span>
+    res<span class="preprocessor">.write</span>(<span class="string">"data: "</span> + JSON<span class="preprocessor">.stringify</span>(data) + <span class="string">"\n\n"</span>)<span class="comment">;</span>
+    if (cb) {
+        return cb(req, res)<span class="comment">;</span>
+    }
+}<span class="comment">;</span>
+</pre></figure></code></pre>
+<p>The first part here is making sure we send a unique ID with each request, we
+just use a simple date based one here. The ID is useful so that if a client
+reconnects later, it will send the <a href="http://www.w3.org/TR/eventsource/#last-event-id">Last-Event-ID</a>
+header in the response, so the server can decide on a delta of which to resume
+push messages (not implemented in the demo app though).</p>
+<p>Note in Apache, Nginx or as here for Node.js you should consider upping the
+timeout for SSE requests. This is <a href="http://nodejs.org/api/all.html#all_server_settimeout_msecs_callback">easily set</a>
+in Node 0.10.x, and for per-request instead of a global socket setting you can
+do the following (20 min idle):</p>
+<pre><code><figure class="highlight"><pre>res<span class="variable">.connection</span><span class="variable">.setTimeout</span>(<span class="number">1000</span> * <span class="number">60</span> * <span class="number">20</span>)
+</pre></figure></code></pre>
+<p>Using these functions in an express.js app to echo the servers date every second
+might look like the following:</p>
+<pre><code><figure class="highlight"><pre>app.<span class="keyword">get</span>(<span class="comment">'/stream/date', function(req, res) {</span>
+
+    var event = <span class="comment">'date';</span>
+
+    sse.writeSSEHead(req, res, <span class="keyword">function</span>(req, res) {
+      sse.writeSSEData(req, res, event, <span class="keyword">new</span> <span class="built_in">Date</span>(), <span class="keyword">function</span>(req, res) {
+
+        intervalx = setInterval(<span class="keyword">function</span>() {
+          sse.writeSSEData(req, res, event, <span class="keyword">new</span> <span class="built_in">Date</span>());
+        }, <span class="number">1000</span>);
+
+        req.connection.addListener(<span class="string">"close"</span>, <span class="keyword">function</span>() {
+            clearInterval(intervalx);
+        });
+      });
+    });
+});
+</pre></figure></code></pre>
+<p>We then use a new <code>EventSource</code>
+( <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventSource?redirectlocale=en-US&amp;redirectslug=Server-sent_events%2FEventSource">MDN</a> )
+native browser object to connect to this endpoint
+( full code: <a href="https://github.com/jdpaton/sse-dash/blob/master/web/app/widgets/sse-date/main.js">here</a> ):</p>
+<pre><code><figure class="highlight"><pre>function connect() {
+        source = new EventSource(<span class="string">"stream/date"</span>)<span class="comment">;</span>
+
+        source<span class="preprocessor">.addEventListener</span>(<span class="string">"date"</span>, function(event) {
+          self<span class="preprocessor">.updateDate</span>(event<span class="preprocessor">.data</span>)<span class="comment">;</span>
+        }, false)<span class="comment">;</span>
+
+        source<span class="preprocessor">.addEventListener</span>(<span class="string">"open"</span>, function(event) {
+          button<span class="preprocessor">.text</span>(<span class="string">"Disconnect"</span>)<span class="comment">;</span>
+          button<span class="preprocessor">.click</span>( function(event) {
+            source<span class="preprocessor">.close</span>()<span class="comment">;</span>
+            button<span class="preprocessor">.text</span>(<span class="string">"Connect"</span>)<span class="comment">;</span>
+            button<span class="preprocessor">.click</span>(connect)<span class="comment">;</span>
+            status<span class="preprocessor">.text</span>(<span class="string">"Connection closed!"</span>)<span class="comment">;</span>
+          })<span class="comment">;</span>
+          button_cont<span class="preprocessor">.removeClass</span>(<span class="string">"warning"</span>)<span class="comment">;</span>
+          status<span class="preprocessor">.text</span>(<span class="string">"Connection open!"</span>)<span class="comment">;</span>
+        }, false)<span class="comment">;</span>
+
+ [...]
+</pre></figure></code></pre>
+<p>The EventSource parameter is the endpoint resource relative the page path, or
+a full URI. Note that SSE supports cross-domain requests out of the box, via
+<a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">CORS</a>.
+The <code>date</code> event listener is listening for lines from the server like:</p>
+<pre><code><figure class="highlight"><pre><span class="title">event</span>: <span class="typedef"><span class="keyword">data</span></span>
+<span class="typedef"><span class="keyword">data</span>: '"2013-07-07T07:04:55.162Z"'</span>
+</pre></figure></code></pre>
+<p>and on each update we simply update our HTML element with the new element -
+simples!</p>
+<p>Note the client code examples here are all using <a href="(http://aurajs.com)">Aura</a>, a pretty cool
+project mentored by <a href="https://twitter.com/addyosmani">@addyosmani</a>. We can write
+a Aura widget per SSE endpoint, and use it anywhere on the website without
+having to do anything - just add a <code>&lt;div&gt;</code>! :</p>
+<pre><code><figure class="highlight"><pre><span class="tag">&lt;<span class="title">div</span> <span class="attribute">data-aura-widget</span>=<span class="value">"sse-date"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+</pre></figure></code></pre>
+<blockquote>
+<p>&quot;Aura is an event-driven architecture for wrapping your code into reusable
+widgets and extensions that can easily communicate with each other&quot; - aurajs.com</p>
+</blockquote>
+<!-- ## Screenshot:
+[Demo App screenshot](http://i.imgur.com/7yLIHKP.png) -->
+
+<p>I won&#39;t cover Aura in depth here, but the code in the demo app and on material
+on their site should be enough to get you started. In pursuit of this project
+you could combine widgets to create customizable dashboards whose components
+can talk to each other with realtime SSE data, so lots of avenues to explore!
+I&#39;d highly recommending using <a href="(http://aurajs.com)">Aura</a> for projects like this,
+so check it out!</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        <div class="alignright">
+          <a href="../../2013/07/08/server-sent-events-with-aura-and-nodejs/#disqus_thread" class="comment-link">Comments</a>
+        </div>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+  
+
+  <nav id="pagination">
+  
+  
+  <div class="clearfix"></div>
+</nav>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Jamie Paton</title>
+  <title>Archives: 2013/7 | Jamie Paton</title>
   <meta name="author" content="Jamie Paton">
   
   <meta name="description" content="You might be suprised to find most of the topics are about programming and writing.">
@@ -38,7 +38,11 @@
     <div id="main-col" class="alignleft"><div id="wrapper">
 
 
-  <article class="post">
+<h2 class="archive-title">2013/7</h2>
+
+
+  
+    <article class="post">
   
   <div class="post-content">
     <header>
@@ -236,8 +240,8 @@ so check it out!</p>
 </article>
 
 
-
-  <article class="post">
+  
+    <article class="post">
   
   <div class="post-content">
     <header>
@@ -437,227 +441,14 @@ so check it out!</p>
 </article>
 
 
-
-  <article class="post">
   
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-07-01T05:09:33.000Z"><a href="/../2013/06/30/disabling-sslv2-with-nodejs/">Jun 30, 2013</a></time>
-      
-      
-        
-          <h1 class="title"><a href="/../2013/06/30/disabling-sslv2-with-nodejs/">Disabling SSLv2 with Node.js</a></h1>
-        
-      
-    </header>
-    <div class="entry">
-      
-        <p>It recently came to light that SSLv2 support in the TLS/HTTPS modules in node.js
-is enabled by default if supported by the system OpenSSL library.
-Now, it may or may not be a suprise to some that
-<a href="http://www.makethenmakeinstall.com/2012/04/sslv2-why-are-you-still-around/">SSLv2</a>
-is <a href="http://www.gnutls.org/manual/html_node/On-SSL-2-and-older-protocols.html">sufficiently</a>
-<a href="http://www.schneier.com/paper-ssl.pdf">broken</a> and has in fact
-has been deprecated (since 1996) that it warrants disabling in any serious
-production environment.</p>
-<p>As of OpenSSL v1.0+ it is diabled by default, as evident in newer versions of
-<a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=589706">Debian</a> and
-<a href="http://stackoverflow.com/questions/8206546/undefined-symbol-sslv2-method">Ubuntu</a>
-since 10.04.</p>
-<p>Now, for node.js depending on the SSL library used, it will enable SSLv2 by default
-, which as you know by know is not a good idea.</p>
-<p>To verify that you cannot connect with SSLv2 to your node server,
-fire off the following openssl command:</p>
-<pre><code><figure class="highlight"><pre><span class="comment">$</span> <span class="comment">openssl</span> <span class="comment">s_client</span> <span class="literal">-</span><span class="comment">connect</span> <span class="comment">hostname:443</span> <span class="literal">-</span><span class="comment">ssl2
-</pre></figure></code></pre>
-<p>And the response should look something akin to:</p>
-<pre><code><figure class="highlight"><pre><span class="class">CONNECTED</span>(<span class="number">00000003</span>)
-<span class="number">83295</span>:<span class="method">error:</span><span class="number">1407</span>F0E5:<span class="class">SSL</span> <span class="method">routines:</span><span class="class">SSL2_WRITE</span>:ssl handshake <span class="method">failure:</span>/<span class="class">SourceCache</span>/<span class="class">OpenSSL098</span>/<span class="class">OpenSSL098</span>-<span class="number">47.1</span>/src/ssl/s2_pkt.<span class="method">c:</span><span class="number">428</span>:
-</pre></figure></code></pre>
-<p>If you see something like the following, then you should consider disabling
-SSLv2:</p>
-<pre><code><figure class="highlight"><pre><span class="comment">CONNECTED(00000003)</span>
-<span class="string">.</span><span class="string">.</span>
 
-<span class="comment">SSL</span> <span class="comment">handshake</span> <span class="comment">has</span> <span class="comment">read</span> <span class="comment">736</span> <span class="comment">bytes</span> <span class="comment">and</span> <span class="comment">written</span> <span class="comment">434</span> <span class="comment">bytes
-</pre></figure></code></pre>
-<p>One (seemingly undocumented on the server side) is to pass one of the
-available OpenSSL <a href="http://www.openssl.org/docs/ssl/SSL_CTX_new.html">CTX methods</a>
-such as <code>SSLv3_method</code> to the <code>httpsOptions</code> object in the
-<a href="http://nodejs.org/docs/v0.8.24/api/tls.html#tls_tls_createserver_options_secureconnectionlistener">TLS/HTTPS</a>
-<code>.createServer(...)</code>methods in Node.js.</p>
-<p>Setting this option will force a <strong>single</strong> protocol to the SSL handshake,
-meaning that for some older clients such as the default OpenSSL on OSX this will
-cause an issue for the handshake, where it tries to negotiate a <code>SSLv23_method</code>,
-which with the above change is an unsupported fallback method for SSLv2 
-( note the <code>SSL23_WRITE</code> ), as per OSX 10.7:</p>
-<pre><code><figure class="highlight"><pre>○ openssl version
-<span class="class">OpenSSL</span> <span class="number">0.9</span><span class="number">.8</span>x <span class="number">10</span> <span class="class">May</span> <span class="number">2012</span>
-
-○ openssl s_client -connect <span class="method">hostname:</span><span class="number">443</span>
-<span class="class">CONNECTED</span>(<span class="number">00000003</span>)
-<span class="number">60349</span>:<span class="method">error:</span><span class="number">140790E5</span>:<span class="class">SSL</span> <span class="method">routines:</span><span class="class">SSL23_WRITE</span>:ssl handshake <span class="method">failure:</span>/<span class="class">SourceCache</span>/<span class="class">OpenSSL098</span>/<span class="class">OpenSSL098</span>-<span class="number">47.1</span>/src/ssl/s23_lib.<span class="method">c:</span><span class="number">182</span>:
-</pre></figure></code></pre>
-<p>A solution for this particular problem which may affect applications that use
-the system OpenSSL on is to recompile node with the
-<a href="https://github.com/joyent/node/commit/f23c45f7f46143c225696b57422234d746698b73">--no-ssl2 option</a>.</p>
-<p>After passing that option as <code>./configure --no-sslv2</code>, you should find that older
-clients are now able to connect directly using TLSv1/SSLv3, and avoid the instant
-handshake fail as before:</p>
-<pre><code><figure class="highlight"><pre><span class="comment">○</span> <span class="comment">openssl</span> <span class="comment">s_client</span> <span class="literal">-</span><span class="comment">connect</span> <span class="comment">stacka</span>.<span class="comment">to:443</span>
-
-<span class="comment">CONNECTED(00000003)</span>
-<span class="comment">depth=2</span> <span class="comment">/C=US/O=DigiCert</span> <span class="comment">Inc/OU=www</span>.<span class="comment">digicert</span>.<span class="comment">com/CN=DigiCert</span> <span class="comment">High</span> <span class="comment">Assurance</span> <span class="comment">EV</span> <span class="comment">Root</span> <span class="comment">CA</span>
-
-<span class="string">.</span><span class="string">.</span><span class="comment">snip</span>.<span class="string">.</span>
-
-<span class="comment">SSL</span>-<span class="comment">Session:</span>
-    <span class="comment">Protocol</span>  <span class="comment">:</span> <span class="comment">TLSv1</span>
-    <span class="comment">Cipher</span>    <span class="comment">:</span> <span class="comment">RC4</span>-<span class="comment">SHA</span>
-    <span class="comment">Session</span>-<span class="comment">ID:</span> <span class="comment">7B78B50B595C19AF3DA7BE845D0724C7F969505CEDDB3EA799E09C18A83433AB</span>
-    <span class="comment">Session</span>-<span class="comment">ID</span>-<span class="comment">ctx:</span> 
-    <span class="comment">Master</span>-<span class="comment">Key:</span> <span class="comment">EA61C4401AEA8057690E36D45B5101CBA970820A89F8A1D1AFF159578D14C39935B844BC8DA5A65E6970250F9D43D270</span>
-    <span class="comment">Key</span>-<span class="comment">Arg</span>   <span class="comment">:</span> <span class="comment">None</span>
-    <span class="comment">Start</span> <span class="comment">Time:</span> <span class="comment">1372659259</span>
-    <span class="comment">Timeout</span>   <span class="comment">:</span> <span class="comment">300</span> <span class="comment">(sec)</span>
-    <span class="comment">Verify</span> <span class="comment">return</span> <span class="comment">code:</span> <span class="comment">0</span> <span class="comment">(ok)</span>
-<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>
-</pre></figure></code></pre>
-<p>If you have Nginx/Apache in front of Node.js then since v1.0 then make sure
-you&#39;re disabling it there too: <a href="http://www.evanhoffman.com/evan/2011/09/20/making-sure-sslv2-is-disabled-in-apache/">http://www.evanhoffman.com/evan/2011/09/20/making-sure-sslv2-is-disabled-in-apache/</a></p>
-<p>Note that on some popular SSL strength/vulnerability analysers, SSlv2 support
-is an automatically failing grade. By disabling it, you can go from an <a href="https://www.ssllabs.com/ssltest/analyze.html?d=api.stacka.to">&#39;F&#39; to
-a &#39;A&#39;</a>  with a
-minor tweak!</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        <div class="alignright">
-          <a href="../../2013/06/30/disabling-sslv2-with-nodejs/#disqus_thread" class="comment-link">Comments</a>
-        </div>
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2012-11-05T23:21:42.000Z"><a href="/../2012/11/05/setup-hexo/">Nov 5, 2012</a></time>
-      
-      
-        
-          <h1 class="title"><a href="/../2012/11/05/setup-hexo/">Setting up a Github Pages blog with Hexo</a></h1>
-        
-      
-    </header>
-    <div class="entry">
-      
-        <h1>Setup</h1>
-<p>You&#39;ll need the following installed before you can pop the champagne:</p>
-<ol>
-<li><a href="http://nodejs.org">Node.js</a></li>
-<li>Hexo <code>npm install -g hexo</code></li>
-</ol>
-<h1>Setup Hexo</h1>
-<p>Once you&#39;ve got Hexo installed, you can simply run:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre>    $ hexo init username.github.com
-    $ cd username.github.com
-</pre></td></tr></table></figure>
-
-<p>Next, we need to configure a couple of things so open up the config file:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>    $ vim _config.yml
-</pre></td></tr></table></figure>
-
-<p>Some items you&#39;ll want to immediately change are:</p>
-<ul>
-<li>Title</li>
-<li>Subtitle</li>
-<li>Url</li>
-<li>Author</li>
-</ul>
-<p>To make Github deployments work with <code>hexo deploy</code> you&#39;ll want to make sure
-that the <code># Deployment</code> section looks something like:</p>
-<figure class="highlight lang-yaml"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-</pre></td><td class="code"><pre><span class="method">deploy:</span>
-      <span class="method">type:</span> github
-      <span class="method">repository:</span> <span class="method">https:</span>//github.com/username/username.github.com.git
-      <span class="method">branch:</span> master
-</pre></td></tr></table></figure>
-
-<h2>Setup Github</h2>
-<p>Github provides hosting for static websites via <a href="http://pages.github.com">Github Pages</a>.
-As long as you have an index.html in the root of your repo, Github will serve
-up the static files for you.</p>
-<h2>Create a new repository for your blog</h2>
-<p>You can get this setup by creating the required repository for your new blog, 
-simply create a <a href="https://help.github.com/articles/creating-a-new-repository">new repo</a>
-with the name format as <code>&lt;github username&gt;.github.com</code>, for example: <code>jdpaton.github.com</code>.</p>
-<p>Once the repo has been created you can setup the deployment process in hexo
-with:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>    $ hexo setup_deploy
-</pre></td></tr></table></figure>
-
-<h2>Generate some content</h2>
-<p>Now that everything is assembled in place, it&#39;s time to flesh out the blog. To 
-generate a new post in Hexo simply issue:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>    $ hexo add_post &lt;title&gt;
-</pre></td></tr></table></figure>
-
-<p>That command will create a new post in <code>source/_posts/&lt;title&gt;.md</code>.
-More info about article structure <a href="http://zespia.tw/hexo/docs/writing.html">here</a></p>
-<p>Now you can go ahead and add your content, and then when finished, simply run:</p>
-<figure class="highlight lang-bash"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre>    $ hexo generate
-    $ hexo deploy
-</pre></td></tr></table></figure>
-
-<p>And your new blog will be live at <a href="http://username.github.com">http://username.github.com</a> </p>
-<p>Hexo: <a href="http://zespia.tw/hexo/docs/">Docs</a></p>
-<p>Here&#39;s one I made earlier ;)</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        <div class="alignright">
-          <a href="../../2012/11/05/setup-hexo/#disqus_thread" class="comment-link">Comments</a>
-        </div>
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-<nav id="pagination">
+  <nav id="pagination">
   
   
   <div class="clearfix"></div>
-</nav></div></div>
+</nav>
+</div></div>
     <aside id="sidebar" class="alignright">
 <div class="search">
   <form action="http://google.com/search" method="get" accept-charset="utf-8">
